@@ -1,3 +1,9 @@
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:prod}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
