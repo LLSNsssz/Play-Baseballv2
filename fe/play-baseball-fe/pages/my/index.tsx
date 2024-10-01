@@ -48,7 +48,7 @@ const My: React.FC = () => {
                     updatedAt: userData.updatedAt,
                     lastLoginDate: userData.lastLoginDate,
                     deletedAt: userData.deletedAt,
-                    emailVerified: userData.emailVerified === 1,
+                    emailVerified: userData.emailVerified,
                     phoneNumber: userData.phoneNumber,
                     gender: userData.gender,
                 };
@@ -109,7 +109,7 @@ const My: React.FC = () => {
             console.log("Sending verification email to:", userState.email);
             const response = await api.post(`${MEMBER_VERIFY_RESEND}?email=${encodeURIComponent(userState.email)}`);
             console.log("Server response:", response.data);
-            setResendStatus("인증 이메일이 재발송되었습니다.");
+            setResendStatus("인증 이메일이 재발송되었습니다. 이메일을 확인해 주세요.");
         } catch (error) {
             console.error("Error resending verification email:", error);
             if (axios.isAxiosError(error) && error.response) {
