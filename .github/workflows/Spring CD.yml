@@ -37,29 +37,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Docker images with Jib
-        run: |
-          ./gradlew jib \
-            -Pspring.profiles.active=prod \
-            -Djib.to.image=${{ env.DOCKER_IMAGE }}:v2prod \
-            -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} \
-            -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }} 
-          ./gradlew jib \
-            -Pspring.profiles.active=debug \
-            -Djib.to.image=${{ env.DOCKER_IMAGE }}:v2debug \
-            -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} \
-            -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }}
-
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Push Docker images
+      - name: Build and Push Docker images with Jib
         run: |
-          docker push ${{ env.DOCKER_IMAGE }}:v2prod
-          docker push ${{ env.DOCKER_IMAGE }}:v2debug
+          ./gradlew jib -Pspring.profiles.active=prod
+          ./gradlew jib -Pspring.profiles.active=debug
 
       - name: Deploy to EC2
         env:
@@ -87,7 +74,7 @@ jobs:
             JWT_EMAIL_VERIFICATION_EXPIRATION=${{ secrets.JWT_EMAIL_VERIFICATION_EXPIRATION }}
             MAIL_HOST=${{ secrets.MAIL_HOST }}
             MAIL_PORT=${{ secrets.MAIL_PORT }}
-            MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
+            MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}  
             MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
             S3_NAME=${{ secrets.S3_NAME }}
             S3_KEY=${{ secrets.S3_KEY }}
@@ -106,36 +93,6 @@ jobs:
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << EOF
             echo "Removing dangling images..."
             docker images --filter "dangling=true" -q | xargs -r docker rmi
-            echo "Removing old versions of ${{ env.DOCKER_IMAGE }}..."
+            echo "Removing old versions of ${{ env.DOCKER_IMAGE }}..."  
             docker images | grep "${{ env.DOCKER_IMAGE }}" | grep -v "v2prod" | grep -v "v2debug" | awk '{print $3}' | xargs -r docker rmi
-            echo "Pulling new images..."
-            docker pull ${{ env.DOCKER_IMAGE }}:v2prod
-            docker pull ${{ env.DOCKER_IMAGE }}:v2debug
-            echo "Remaining images:"
-            docker images
-          EOF
-
-          # Deploy prod image
-          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << EOF
-            docker stop play-baseball-server || true
-            docker rm play-baseball-server || true
-            docker run -d --name play-baseball-server \
-              --env-file .env \
-              -p 8080:8080 \
-              ${{ env.DOCKER_IMAGE }}:v2prod
-          EOF
-
-          rm -f private_key.pem
-
-      - name: Check container logs
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_KEY }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key.pem  
-          chmod 600 private_key.pem
-          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << EOF
-            timeout 30s docker logs -f play-baseball-server || true
-          EOF
-          rm -f private_key.pem
+            echo "Pulling new ima
