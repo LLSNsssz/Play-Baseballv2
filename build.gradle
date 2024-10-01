@@ -35,6 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail:3.2.5'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 
+    // SSH
     implementation 'com.github.mwiede:jsch:0.2.17'
 
     // In-Memory-Cache
@@ -48,6 +49,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // JAXB 관련 의존성 (Java 21에서 필요)
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'  // JAXB API
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.3'        // JAXB 런타임
 
     // Database
     runtimeOnly 'com.mysql:mysql-connector-j'
