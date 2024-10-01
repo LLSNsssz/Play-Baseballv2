@@ -70,8 +70,6 @@ const MyProfile: React.FC<MyProfileProps> = ({
         await onResendVerification();
     };
 
-    console.log('emailVerified:', user.emailVerified);
-
     return (
         <Box sx={{flexGrow: 1, padding: 3}}>
             <Grid container spacing={3} justifyContent="center">
@@ -140,23 +138,25 @@ const MyProfile: React.FC<MyProfileProps> = ({
                                 disabled
                                 onChange={handleChange}
                             />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={Boolean(user.emailVerified)}
-                                        disabled
-                                        sx={{
-                                            color: user.emailVerified ? 'primary.main' : 'grey.500',
-                                            '&.Mui-checked': {
+                            {user.emailVerified ? (
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={true}
+                                            disabled
+                                            sx={{
                                                 color: 'primary.main',
-                                            },
-                                        }}
-                                    />
-                                }
-                                label="Email Verified"
-                            />
-                            {!user.emailVerified && (
+                                                '&.Mui-checked': {
+                                                    color: 'primary.main',
+                                                },
+                                            }}
+                                        />
+                                    }
+                                    label="Email Verified"
+                                />
+                            ) : (
                                 <Box mt={2}>
+                                    <Typography color="error">이메일 인증이 필요합니다.</Typography>
                                     <Button
                                         variant="outlined"
                                         color="primary"
@@ -166,7 +166,7 @@ const MyProfile: React.FC<MyProfileProps> = ({
                                         {isResending ? '이메일 발송 중...' : '이메일 인증 재발송'}
                                     </Button>
                                     {resendStatus && (
-                                        <Alert severity="info" sx={{mt: 1}}>
+                                        <Alert severity={resendStatus.includes('실패') ? 'error' : 'info'} sx={{mt: 1}}>
                                             {resendStatus}
                                         </Alert>
                                     )}
