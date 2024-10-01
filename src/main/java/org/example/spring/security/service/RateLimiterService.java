@@ -61,7 +61,7 @@ public class RateLimiterService {
 		String key = getKey(token, ip, userAgent);
 		Bucket bucket = rateLimitCache.get(key, this::createBucket);
 		boolean consumed = bucket.tryConsume(RateLimitBucketConstants.TOKEN_CONSUME_AMOUNT.getValue());
-		log.info("Rate limit check - Key: {}, Consumed: {}", key, consumed);
+		log.debug("Rate limit check - Key: {}, Consumed: {}", key, consumed);
 		return consumed;
 	}
 
