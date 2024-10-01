@@ -92,7 +92,7 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
 						accessToken != null ? accessToken.substring(0, Math.min(accessToken.length(), 20)) + "..." :
 							"Not present");
 				} catch (Exception e) {
-					log.error("Failed to refresh token: {}", e.getMessage());
+					log.debug("Failed to refresh token: {}", e.getMessage());
 				}
 			}
 
@@ -105,12 +105,12 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
 				}
 				filterChain.doFilter(request, response);
 			} else {
-				log.warn("Authentication failed for request: {}", requestURI);
+				log.debug("Authentication failed for request: {}", requestURI);
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.getWriter().write("Authentication failed. Please log in again.");
 			}
 		} catch (Exception e) {
-			log.error("Authentication error: {}", e.getMessage());
+			log.debug("Authentication error: {}", e.getMessage());
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().write("Authentication failed: " + e.getMessage());
 		}

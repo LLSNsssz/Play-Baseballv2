@@ -25,15 +25,15 @@ public class WebSocketHandler implements ChannelInterceptor {
     @Override
     @CrossOrigin
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        log.info("WebSocketHandler preSend");
+        log.debug("WebSocketHandler preSend");
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        log.info("=====??");
+        log.debug("=====??");
         if (StompCommand.CONNECT == accessor.getCommand()) {
             String jwt = Optional.of(accessor.getFirstNativeHeader("Authorization")
                             .substring("Bearer ".length()))
                     .orElseThrow(() -> new MessageException(ErrorCode.UNAUTHORIZED_MESSAGE_ACCESS));
             jwtTokenValidator.validateToken(jwt);
-            log.info("=====!!");
+            log.debug("=====!!");
         }
         return message;
     }
