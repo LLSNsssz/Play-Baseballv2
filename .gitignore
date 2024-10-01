@@ -11,6 +11,7 @@ build/
 secrets/caddy-publicky.txt
 **.pem
 **.csv
+.env
 
 ### STS ###
 .apt_generated
