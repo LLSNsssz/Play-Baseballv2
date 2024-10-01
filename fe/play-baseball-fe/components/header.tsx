@@ -1,154 +1,124 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import { Box, Button, Toolbar, Typography, Container } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import Link from "next/link";
 import { MEMBER_LOGOUT, PAGE_SEARCH } from "@/constants/endpoints";
 import SearchBar from "./SearchBar";
-import Wrapper from "./Wrapper";
 import axiosInstance, { handleApiError } from "./axiosInstance";
 import qs from "qs";
+import { useAuth } from './AuthContext';
 
 const Header: React.FC = () => {
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const { isLoggedIn, isEmailVerified, setAuthStatus, checkAuthStatus } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    const checkLoginStatus = () => {
-      const token = localStorage.getItem("Authorization");
-      setLoggedIn(!!token);
-    };
-
-    checkLoginStatus();
-    window.addEventListener("storage", checkLoginStatus);
-
-    return () => {
-      window.removeEventListener("storage", checkLoginStatus);
-    };
-  }, []);
+  const handleProtectedAction = async (path: string) => {
+    if (isLoggedIn) {
+      if (isEmailVerified) {
+        router.push(path);
+      } else {
+        alert("이메일 인증이 필요합니다. 마이페이지에서 이메일 인증을 진행해 주세요.");
+        router.push("/my");
+      }
+    } else {
+      router.push("/login");
+    }
+  };
 
   const handleLogout = async () => {
     try {
       const response = await axiosInstance.post(
-        MEMBER_LOGOUT,
-        {},
-        { withCredentials: true }
+          MEMBER_LOGOUT,
+          {},
+          { withCredentials: true }
       );
       if (response.status === 200) {
         localStorage.removeItem("Authorization");
         delete axiosInstance.defaults.headers.common["Authorization"];
-        setLoggedIn(false);
-        await router.push("/");
+        setAuthStatus(false, false);
+        router.push("/");
       } else {
         throw new Error("로그아웃 처리 중 오류가 발생했습니다.");
       }
     } catch (error) {
+      console.error("Logout error:", error);
       handleApiError(error);
-      await router.push({
-        pathname: "/result",
-        query: {
-          isSuccess: "false",
-          message:
-            error instanceof Error
-              ? error.message
-              : "알 수 없는 오류가 발생했습니다.",
-          buttonText: "메인 페이지로 돌아가기",
-          buttonAction: "/",
-        },
-      });
+      localStorage.removeItem("Authorization");
+      delete axiosInstance.defaults.headers.common["Authorization"];
+      setAuthStatus(false, false);
+      router.push("/");
     }
   };
 
-  // handleSearch 함수에서 검색어를 keyword로 추가하여 페이지 이동
   const handleSearch = (input: string) => {
     if (input) {
       const updatedQuery = { ...router.query, keyword: input };
       const url = `${PAGE_SEARCH}?${qs.stringify(updatedQuery)}`;
-
       window.location.href = url;
     }
   };
 
   return (
-    <Box sx={{ backgroundColor: "#f5f5f5", width: "100%", py: 2 }}>
-      {" "}
-      {/* 헤더 배경과 전체 width 적용 */}
-      <Container maxWidth="lg">
-        {" "}
-        {/* 내부 콘텐츠를 컨테이너로 감싸 최대 너비 제한 */}
-        <Toolbar
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 0,
-          }}
-        >
-          {/* Home 아이콘 */}
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              fontFamily: "Pretendard",
-              color: "#000",
-            }}
+      <Box sx={{ backgroundColor: "#f5f5f5", width: "100%", py: 2 }}>
+        <Container maxWidth="lg">
+          <Toolbar
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 0,
+              }}
           >
-            <Link href="/" passHref>
-              <HomeIcon sx={{ color: "#000" }} />
-            </Link>
-          </Typography>
-
-          {/* Search Bar */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              flexGrow: 2,
-              justifyContent: "center",
-              mx: 2,
-              maxWidth: "60%", // 최대 width 제한
-            }}
-          >
-            <SearchBar onSearch={handleSearch} />
-          </Box>
-
-          {/* Navigation Buttons */}
-          <Box sx={{ display: "flex", gap: 2 }}>
-            {loggedIn ? (
-              <Button
-                onClick={handleLogout}
-                sx={{ color: "#000", fontFamily: "Pretendard" }}
-              >
-                로그아웃
-              </Button>
-            ) : (
-              <Link href="/login" passHref>
-                <Button sx={{ color: "#000", fontFamily: "Pretendard" }}>
-                  로그인
-                </Button>
+            <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  fontFamily: "Pretendard",
+                  color: "#000",
+                }}
+            >
+              <Link href="/" passHref>
+                <HomeIcon sx={{ color: "#000" }} />
               </Link>
-            )}
-            <Link href={loggedIn ? "/exchange/write" : "/login"} passHref>
-              <Button sx={{ color: "#000", fontFamily: "Pretendard" }}>
+            </Typography>
+
+            <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexGrow: 2,
+                  justifyContent: "center",
+                  mx: 2,
+                  maxWidth: "60%",
+                }}
+            >
+              <SearchBar onSearch={handleSearch} />
+            </Box>
+
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button onClick={() => handleProtectedAction("/exchange/write")} sx={{ color: "#000", fontFamily: "Pretendard" }}>
                 판매하기
               </Button>
-            </Link>
-
-            {/* 로그인 상태에 따라 경로 설정 */}
-            <Link href={loggedIn ? "/chat" : "/login"} passHref>
-              <Button sx={{ color: "#000", fontFamily: "Pretendard" }}>
+              <Button onClick={() => handleProtectedAction("/chat")} sx={{ color: "#000", fontFamily: "Pretendard" }}>
                 채팅하기
               </Button>
-            </Link>
-            <Link href={loggedIn ? "/my" : "/login"} passHref>
-              <Button sx={{ color: "#000", fontFamily: "Pretendard" }}>
+              <Button onClick={() => isLoggedIn ? router.push("/my") : router.push("/login")} sx={{ color: "#000", fontFamily: "Pretendard" }}>
                 마이페이지
               </Button>
-            </Link>
-          </Box>
-        </Toolbar>
-      </Container>
-    </Box>
+              {isLoggedIn ? (
+                  <Button onClick={handleLogout} sx={{ color: "#000", fontFamily: "Pretendard" }}>
+                    로그아웃
+                  </Button>
+              ) : (
+                  <Button onClick={() => router.push("/login")} sx={{ color: "#000", fontFamily: "Pretendard" }}>
+                    로그인
+                  </Button>
+              )}
+            </Box>
+          </Toolbar>
+        </Container>
+      </Box>
   );
 };
 
