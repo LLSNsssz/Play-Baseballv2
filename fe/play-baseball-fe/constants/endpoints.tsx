@@ -53,6 +53,9 @@ export const CHATROOM_ADD: string = `${CHATROOM}`;
 export const CHATROOM_DELETE: string = `${CHATROOM}`;
 export const CHAT: string = `${REQUEST_URL}/chat`;
 export const CHAT_POST_MESSAGE: string = `${CHAT}`;
+export const WS_URL = process.env.NEXT_PUBLIC_API_URL ?
+    `ws${process.env.NEXT_PUBLIC_API_URL.startsWith('https') ? 's' : ''}://${process.env.NEXT_PUBLIC_API_URL.split('://')[1]}/stomp/content/websocket` :
+    (process.env.NEXT_PUBLIC_WS_URL || '');
 
 // Pages
 export const PAGE_SEARCH: string = `${SERVER_URL}/search`;
