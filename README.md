@@ -1,4 +1,3 @@
-
 <div align="center">
 
 # 🌟 SecondInning: AI 중고거래 플랫폼
@@ -43,38 +42,33 @@
 - 🔍 **혁신**: AI 기술을 활용한 정확한 상품 가치 평가
 - 💰 **경제성**: 합리적인 가격으로 모두에게 이익이 되는 거래
 
----
-## 👥 Strike-Out Team
-
-| [![박철안](https://github.com/The-Shinee.png)](https://github.com/The-Shinee) | [![김래현](https://github.com/raehyeonn.png)](https://github.com/raehyeonn) | [![김재희](https://github.com/2019112479kjh.png)](https://github.com/2019112479kjh) |
-|:---:|:---:|:---:|
-| **[박철안](https://github.com/The-Shinee)** | **[김래현](https://github.com/raehyeonn)** | **[김재희](https://github.com/2019112479kjh)** |
-| 👑 팀장 | 💻 Backend | 💻 Backend |
-
-| [![방준현](https://github.com/bindingflare.png)](https://github.com/bindingflare) | [![신재민](https://github.com/Freddieshin.png)](https://github.com/Freddieshin) | [![이승희](https://github.com/LLSNsssz.png)](https://github.com/LLSNsssz) |
-|:---:|:---:|:---:|
-| **[방준현](https://github.com/bindingflare)** | **[신재민](https://github.com/Freddieshin)** | **[이승희](https://github.com/LLSNsssz)** |
-| 🎨 Frontend | 💻 Backend | 💻 Backend |
-
 ## ✨ 핵심 기능
 
-1. 🤖 **AI 기반 가격 책정**
-   - 빅데이터와 AI를 활용한 정확한 상품 가치 평가
-   - 📊 공정한 거래, 사용자 만족도 향상
+1. 🤖 **AI 기반 가격 책정 및 시장 동향 분석**
+   - AI를 활용해 실시간으로 새 제품의 가격을 검색하고 비교
+   - 📊 사용자에게 합리적인 가격 정보 제공
 
 2. 💬 **실시간 채팅**
    - 판매자와 구매자 간 즉각적인 소통 채널
    - 🚀 거래 성사율 증가, 사용자 경험 개선
 
-3. 📊 **시장 동향 분석**
-   - 실시간 시장 가격 동향 제공
-   - 💡 현명한 구매 결정 지원
+3. ⭐ **판매자 및 상품 평가 시스템**
+   - 좋아요, 별점을 통한 상품 평가
+   - 🧐 판매자 프로필, 별점을 통해 신뢰도 있는 거래
+   - 📝 판매자가 작성한 게시글을 통해 상품 정보 파악
 
-4. 🔒 **안전 거래 시스템**
-   - 에스크로 서비스를 통한 안전한 거래 보장
-   - 🛡️ 사기 예방, 플랫폼 신뢰도 향상
+4. 🔒 **보안 강화**
+   - JWT를 통한 안전한 사용자 인증 (Access Token은 localStorage, Refresh Token은 HttpOnly 쿠키에 저장)
+   - 🛡️ Rate Limiting 적용으로 서버 부하 관리 및 보안 향상
 
----
+5. 📧 **이메일 인증 및 알림**
+   - JavaMailSender를 사용하여 회원가입 시 이메일 인증 메일 발송
+   - 🔑 마이페이지에서 이메일 인증 재발송 기능
+   - 🔐 로그인 페이지에서 비밀번호 변경 메일 발송 기능
+
+6. 👤 **마이페이지**
+   - 사용자 정보 수정 기능
+
 ## 🖼️ 서비스 미리보기
 
 <div align="center">
@@ -96,8 +90,6 @@
 | ![판매중 목록](https://github.com/user-attachments/assets/32d4cbc0-7952-4ace-bdd7-f749aacbc232) | ![판매완료 목록](https://github.com/user-attachments/assets/751ad640-a923-4ea4-8d9f-9db1c4738927) | ![비밀번호 재설정](https://github.com/user-attachments/assets/c93683bc-ab3b-4027-bcf4-4b70f2cea83a) |
 
 </div>
-
----
 
 ## 🛠️ 기술 스택
 
@@ -127,70 +119,23 @@
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 
----
-
-## 🚀 시작하기
-
-### 1️⃣ 저장소 복제
-터미널 또는 IntelliJ 터미널에서:
-```bash
-git clone https://github.com/Ormi5-StrikeOut/Play-Baseball.git
-cd Play-Baseball
-```
-
-### 2️⃣ 의존성 설치
-프론트엔드:
-```bash
-cd fe/play-baseball-fe
-npm install
-```
-
-백엔드 (IntelliJ에서):  
-Gradle 탭에서 `bootJar` 태스크 실행
-
-### 3️⃣ 환경 설정
-프론트엔드:
-`fe/play-baseball-fe/.env.local` 파일 생성 후 필요한 환경변수 설정
-
-백엔드:
-`src/main/resources/` 경로에 `application-dev.yml` 파일 생성 후 필요한 환경변수 설정
-
-### 4️⃣ 실행
-프론트엔드:
-```bash
-cd fe/play-baseball-fe 
-npm run dev
-```
-
-백엔드 (IntelliJ에서):
-메인 클래스인 `PlayBaseballApplication` 실행
-
-🎉 https://ioshane.com 에서 SecondInning을 만나보세요!
-
----
-
 ## 시스템 아키텍처
 ![Web App Reference Architecture](https://github.com/user-attachments/assets/dfb459ea-8f19-4d28-9aec-d7a5a8779daa)
 
-
----
-
 ## ERD
-
 ![ERD](https://github.com/user-attachments/assets/8fa23b9d-e9b3-4874-b90b-7c70dab0b208)
 
+## 👥 Strike-Out Team
 
----
+| [![박철안](https://github.com/The-Shinee.png)](https://github.com/The-Shinee) | [![김래현](https://github.com/raehyeonn.png)](https://github.com/raehyeonn) | [![김재희](https://github.com/2019112479kjh.png)](https://github.com/2019112479kjh) |
+|:---:|:---:|:---:|
+| **[박철안](https://github.com/The-Shinee)** | **[김래현](https://github.com/raehyeonn)** | **[김재희](https://github.com/2019112479kjh)** |
+| 👑 팀장 | 💻 Backend | 💻 Backend |
 
-## 🤝 기여하기
-
-SecondInning의 성장에 함께해주세요! 다음과 같은 방법으로 참여할 수 있습니다:
-
-1. 이 저장소를 포크합니다.
-2. 새 브랜치를 만듭니다: `git checkout -b feat/#{이슈번호}`
-3. 변경사항을 커밋합니다: `git commit -m '작업 종류(Feat, Refactor): 커밋 내용'`
-4. 브랜치에 푸시합니다: `git push origin feat/#{이슈번호}`
-5. Pull Request를 열어 여러분의 아이디어를 공유해주세요!
+| [![방준현](https://github.com/bindingflare.png)](https://github.com/bindingflare) | [![신재민](https://github.com/Freddieshin.png)](https://github.com/Freddieshin) | [![이승희](https://github.com/LLSNsssz.png)](https://github.com/LLSNsssz) |
+|:---:|:---:|:---:|
+| **[방준현](https://github.com/bindingflare)** | **[신재민](https://github.com/Freddieshin)** | **[이승희](https://github.com/LLSNsssz)** |
+| 🎨 Frontend | 💻 Backend | 💻 Backend |
 
 ---
 
