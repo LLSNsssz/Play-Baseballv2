@@ -214,15 +214,6 @@ const ChatInterface = () => {
       messageContent: newMessage,
     };
 
-    // 즉시 메시지 목록에 추가
-    const newMessageObject = {
-      messageId: Date.now(),
-      member: { id: member.id, nickname: member.nickname },
-      messageContent: newMessage,
-      createdAt: new Date().toISOString()
-    };
-    setMessageList(prevList => [...prevList, newMessageObject]);
-
     try {
       client.current.publish({
         destination: `/pub/chats/${selectedChatRoom}`,
@@ -234,8 +225,13 @@ const ChatInterface = () => {
     } catch (error) {
       console.error("Failed to send message:", error);
       setSnackbar({ open: true, message: '메시지 전송에 실패했습니다. 다시 시도해주세요.' });
-      // 메시지 전송 실패 시 추가했던 메시지 제거
-      setMessageList(prevList => prevList.filter(msg => msg.messageId !== newMessageObject.messageId));
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      handleSendMessage();
     }
   };
 
@@ -338,6 +334,7 @@ const ChatInterface = () => {
                           placeholder="메시지를 입력하세요..."
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
+                          onKeyPress={handleKeyPress}
                           sx={{ mr: 1 }}
                       />
                       <Button
