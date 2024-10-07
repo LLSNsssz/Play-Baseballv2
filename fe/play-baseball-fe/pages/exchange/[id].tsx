@@ -201,26 +201,33 @@ const ItemDetail: React.FC = () => {
 
   const createMessageRoom = async (targetNickname: string) => {
     setLoading(true);
-    axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
-
-    axios.interceptors.request.use(
-      (config) => {
-        config.headers.Authorization = localStorage.getItem("Authorization");
-        return config;
-      },
-      (err) => {
-        console.log(err);
-        return Promise.reject(err);
-      }
-    );
-
     try {
-      const response = await axios.post(`/messages/room/${targetNickname}`);
-      console.log("메시지 방 생성 성공:", response.data);
+      const token = localStorage.getItem("Authorization");
+      const response = await axios.post(
+          `/api/messages/room/${targetNickname}`,
+          {},
+          {
+            headers: {
+              Authorization: token ? (token.startsWith('Bearer ') ? token : `Bearer ${token}`) : ''
+            }
+          }
+      );
+      console.log("메시지 방 생성 성공:", response);
 
-      router.push("/chat");
+      if (response.data && response.data.data && response.data.data.messageRoomId) {
+        router.push(`/chat?roomId=${response.data.data.messageRoomId}`);
+      } else {
+        console.error("Invalid response data:", response.data);
+        alert("채팅방 생성에 실패했습니다. 응답 데이터 구조가 올바르지 않습니다.");
+      }
     } catch (err) {
       console.error("메시지 방 생성 실패:", err);
+      if (axios.isAxiosError(err) && err.response) {
+        console.error("Error response:", err.response.data);
+        alert(`채팅방 생성 실패: ${err.response.data.message || '알 수 없는 오류가 발생했습니다.'}`);
+      } else {
+        alert("채팅방 생성에 실패했습니다. 다시 시도해주세요.");
+      }
     } finally {
       setLoading(false);
     }
