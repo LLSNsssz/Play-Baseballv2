@@ -27,13 +27,13 @@ public class WebSocketHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         log.debug("WebSocketHandler preSend");
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        log.debug("=====??");
+        log.debug("WebSocket Connection Attempt Started");
         if (StompCommand.CONNECT == accessor.getCommand()) {
             String jwt = Optional.of(accessor.getFirstNativeHeader("Authorization")
                             .substring("Bearer ".length()))
                     .orElseThrow(() -> new MessageException(ErrorCode.UNAUTHORIZED_MESSAGE_ACCESS));
             jwtTokenValidator.validateToken(jwt);
-            log.debug("=====!!");
+            log.debug("WebSocket JWT Token Validation Successful");
         }
         return message;
     }
